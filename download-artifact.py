@@ -3,6 +3,7 @@ import sys
 import requests
 import zipfile
 import io
+import json
 
 if (len(sys.argv) < 5):
     print("Usage: download-artifact.py <owner> <repo> <token> <n of artifacts>")
@@ -17,6 +18,11 @@ json_response = requests.get(f"https://api.github.com/repos/{owner}/{repos}/acti
             "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": "2022-11-28"
         }).json()
+
+if (json_response.get("artifacts") is None):
+    print("No artifacts available:")
+    print(json.dumps(json_response, indent=2))
+    exit()
 
 for i in range(int(nartifacts)):
     artifact_url =  json_response["artifacts"][i]["archive_download_url"]
